@@ -3,6 +3,10 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from psycopg2.extras import RealDictCursor
+import redis
+
+REDIS_HOST = os.getenv("REDIS_HOST", "cache")
+redis_client = redis.Redis(host=REDIS_HOST, port=6379, db=0, decode_responses=True)
 
 app = FastAPI()
 origins = ["*"]
@@ -27,6 +31,7 @@ def get_db_connection():
 
 @app.get("/")
 async def get_students():
+    views = redis_client.incr("views", 1)
     try:
         conn = get_db_connection()
         cur = conn.cursor(cursor_factory=RealDictCursor)
@@ -34,6 +39,8 @@ async def get_students():
         row = cur.fetchall()
         cur.close()
         conn.close()
+        for r in row:
+            r["views"] = views
         return row
     except Exception as e:
         return {"error": str(e)}
