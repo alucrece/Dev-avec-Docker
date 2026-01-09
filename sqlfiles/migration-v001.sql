@@ -1,12 +1,13 @@
-CREATE DATABASE mydb;
- 
-\c mydb;
- 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(50),
-    email VARCHAR(100)
+    nom VARCHAR(100),
+    prenom VARCHAR(100),
+    email VARCHAR(255),
+    date_naissance DATE,
+    pays VARCHAR(255),
+    ville VARCHAR(255),
+    code_postal VARCHAR(5)
 );
- 
-INSERT INTO users (username, email)
-VALUES ('john', 'john@example.com');
+
+INSERT INTO users (nom, prenom, email, date_naissance, pays, ville, code_postal)
+VALUES ('doe', 'john','john@example.com','1990-01-01','FRANCE','Nice','06000');
