@@ -31,7 +31,11 @@ def get_db_connection():
 
 @app.get("/")
 async def get_students():
-    views = redis_client.incr("views", 1)
+    try:
+        views = redis_client.incr("views", 1)
+    except:
+        views = 0
+    
     try:
         conn = get_db_connection()
         cur = conn.cursor(cursor_factory=RealDictCursor)
