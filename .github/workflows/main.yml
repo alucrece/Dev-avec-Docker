@@ -1,0 +1,23 @@
+name: Test 2 publish Docker Images
+on:
+  push:
+    branches: [master, main]
+jobs:
+  build_test_images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: docker build
+        run: docker build -t python-api:test -f python.Dockerfile .
+      - name: run docker container
+        run: docker run -d --name pythonapi_test -p 8000:8000 python-api:test
+      - name: check container status
+        run: docker ps --filter name=pythonapi_test
+      - name: test container response
+        run: |
+          sleep 5
+          curl -f http://localhost:8000
+      - name: stop and remove container
+        run: |
+          docker stop pythonapi_test
+          docker rm pythonapi_test
