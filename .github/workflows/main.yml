@@ -16,7 +16,7 @@ jobs:
       - name: test container response
         run: |
           sleep 15
-          curl -v http://localhost:8000
+          curl -f http://localhost:8000
       - name: check api logs
         run: docker logs pythonapi_test
       - name: stop and remove container
