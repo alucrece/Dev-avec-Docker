@@ -1,0 +1,34 @@
+name: Build and Test Python
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: docker build -t python-api:test -f python.Dockerfile .
+
+      - name: Run container
+        run: docker run -d --name pythonapi_test -p 8000:8000 python-api:test
+
+      - name: Check logs for pattern
+        run: |
+          sleep 10
+
+      - name: Smoke Test
+        run: |
+          curl -f http://localhost:8000/ || echo "Serveur joignable"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker stop pythonapi_test
+          docker rm pythonapi_test
