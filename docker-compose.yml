@@ -29,7 +29,7 @@ services:
     depends_on:
       - api
   api:
-    image: python-api
+    image: ${PYTHON_IMAGE_TAG:-python-api:latest}
     build: 
       context: .
       dockerfile: python.Dockerfile
